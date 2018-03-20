@@ -5,5 +5,6 @@ et pour une autre part sur le temps personnel des auteurs.
 Une partie de cette contribution est présente dans la version 3 de npgsql 
 ## Auteurs
 Tumasgiu Rossini & Christophe VERGON - GIRTEC
-## Avertissement
+## Avertissements
 Ce logiciel est livré tel quel sans garantie aucune.
+Il s'agit de la version BETA.
