@@ -1,0 +1,316 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{16C6A589-2249-49E9-942F-0265EF6D8C87}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>Integrateur_Edigeo.My.MyApplication</StartupObject>
+    <RootNamespace>Integrateur_Edigeo</RootNamespace>
+    <AssemblyName>Integrateur_Edigeo</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>WindowsForms</MyType>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <OptionExplicit>On</OptionExplicit>
+    <OptionCompare>Binary</OptionCompare>
+    <OptionStrict>Off</OptionStrict>
+    <OptionInfer>On</OptionInfer>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>P:\Christophe\Git_depot\Integration_cadastre_francais\Binaires\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>Integrateur_Edigeo.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>Integrateur_Edigeo.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>CorseCarto_1.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>BBF29CC26F1F6C2EBCC7D179C12C437452499992</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>Integrateur_Edigeo_CléTemporaire.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Mono.Security, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL" />
+    <Reference Include="Npgsql, Version=2.2.1.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL" />
+    <Reference Include="policy.2.0.Npgsql, Version=0.0.0.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>dll\policy.2.0.Npgsql.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="Wkb, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows.Forms" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AboutBox1.Designer.vb">
+      <DependentUpon>AboutBox1.vb</DependentUpon>
+    </Compile>
+    <Compile Include="AboutBox1.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BaseDeDonnees\BaseCadastre.vb" />
+    <Compile Include="BaseDeDonnees\BasePostGis.vb" />
+    <Compile Include="Dialog1.Designer.vb">
+      <DependentUpon>Dialog1.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Dialog1.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Echange_object.vb" />
+    <Compile Include="Dialogconnection.designer.vb">
+      <DependentUpon>Dialogconnection.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogconnection.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="enums.vb" />
+    <Compile Include="Form2.Designer.vb">
+      <DependentUpon>Form2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form2.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormInegrationPostgis.Designer.vb">
+      <DependentUpon>FormInegrationPostgis.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FormInegrationPostgis.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormIntegration.designer.vb">
+      <DependentUpon>FormIntegration.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FormIntegration.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Geometrie\GeoRegionArgs.vb" />
+    <Compile Include="Geometrie\GEO_Base.vb" />
+    <Compile Include="Geometrie\GEO_Enum.vb" />
+    <Compile Include="Geometrie\GEO_MultiPolygone.vb" />
+    <Compile Include="Geometrie\GEO_Point.vb" />
+    <Compile Include="Geometrie\GEO_Polygone.vb" />
+    <Compile Include="Geometrie\GEO_Polyligne.vb" />
+    <Compile Include="Geometrie\GEO_Region.vb" />
+    <Compile Include="Geometrie\GEO_Vertex.vb" />
+    <Compile Include="Geometrie_Edigeo\ARC.vb" />
+    <Compile Include="Geometrie_Edigeo\Association.vb" />
+    <Compile Include="Geometrie_Edigeo\Coordonee.vb" />
+    <Compile Include="Geometrie_Edigeo\DictionaryGeometrie.vb" />
+    <Compile Include="Geometrie_Edigeo\DictionaryObjetEDIGEO.vb" />
+    <Compile Include="Geometrie_Edigeo\FACE.vb" />
+    <Compile Include="Geometrie_Edigeo\Geometrie.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Geometrie_Edigeo\LayerEDIGEO.vb" />
+    <Compile Include="Geometrie_Edigeo\ListeObjetEDIGEO.vb" />
+    <Compile Include="Geometrie_Edigeo\NOEUD.vb" />
+    <Compile Include="Geometrie_Edigeo\ObjetEDIGEO.vb" />
+    <Compile Include="Geometrie_Edigeo\ObjetEDIGEO_CPX.vb" />
+    <Compile Include="Geometrie_Edigeo\ObjetEDIGEO_LIN.vb" />
+    <Compile Include="Geometrie_Edigeo\ObjetEDIGEO_PCT.vb" />
+    <Compile Include="Geometrie_Edigeo\ObjetEDIGEO_SURF.vb" />
+    <Compile Include="Geometrie_Edigeo\POLYGON.vb" />
+    <Compile Include="Lecteur\Attribut.vb" />
+    <Compile Include="Lecteur\Descripteur_PreCode.vb" />
+    <Compile Include="Lecteur\Descripteur_Reference.vb" />
+    <Compile Include="Lecteur\DIC.vb" />
+    <Compile Include="Lecteur\DIC_Attribut.vb" />
+    <Compile Include="Lecteur\DIC_Objet.vb" />
+    <Compile Include="Lecteur\DIC_Relation.vb" />
+    <Compile Include="Lecteur\FichierEDIGEO.vb" />
+    <Compile Include="Lecteur\ID_Nom.vb" />
+    <Compile Include="Lecteur\Lecteur.vb" />
+    <Compile Include="Lecteur\ListeDescripteurReference.vb" />
+    <Compile Include="Lecteur\ListeZone.vb" />
+    <Compile Include="Lecteur\LotEDIGEO.vb" />
+    <Compile Include="Lecteur\SCD.vb" />
+    <Compile Include="Lecteur\SCD_Attribut.vb" />
+    <Compile Include="Lecteur\SCD_Objet.vb" />
+    <Compile Include="Lecteur\SCD_Primitive.vb" />
+    <Compile Include="Lecteur\SCD_RelConstruction.vb" />
+    <Compile Include="Lecteur\SCD_RelSemantique.vb" />
+    <Compile Include="Lecteur\THF.vb" />
+    <Compile Include="Lecteur\VEC.vb" />
+    <Compile Include="Lecteur\VEC_ARC.vb" />
+    <Compile Include="Lecteur\VEC_FACE.vb" />
+    <Compile Include="Lecteur\VEC_NOEUD.vb" />
+    <Compile Include="Lecteur\VEC_OBJ.vb" />
+    <Compile Include="Lecteur\VEC_RELATION.vb" />
+    <Compile Include="Lecteur\ZoneEdigeo.vb" />
+    <Compile Include="Mdc.vb" />
+    <Compile Include="MDIParent1.Designer.vb">
+      <DependentUpon>MDIParent1.vb</DependentUpon>
+    </Compile>
+    <Compile Include="MDIParent1.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Rect.vb" />
+    <Compile Include="VariableGlobale.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AboutBox1.resx">
+      <DependentUpon>AboutBox1.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialog1.resx">
+      <DependentUpon>Dialog1.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogconnection.resx">
+      <DependentUpon>Dialogconnection.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form2.resx">
+      <DependentUpon>Form2.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormInegrationPostgis.resx">
+      <DependentUpon>FormInegrationPostgis.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormIntegration.resx">
+      <DependentUpon>FormIntegration.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MDIParent1.resx">
+      <DependentUpon>MDIParent1.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="dll\policy.2.0.Npgsql.config" />
+    <None Include="Integrateur_Edigeo_CléTemporaire.pfx" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CorseCarto_1.ico" />
+    <Content Include="dll\gdal_csharp.dll" />
+    <Content Include="dll\Girtec.Geo.dll" />
+    <Content Include="dll\Girtec.Geo.pdb" />
+    <Content Include="dll\libgfl340.dll" />
+    <Content Include="dll\libgfle340.dll" />
+    <Content Include="dll\Mono.Security.dll" />
+    <Content Include="dll\Npgsql.dll" />
+    <Content Include="dll\Npgsql.pdb" />
+    <Content Include="dll\Npgsql.XML" />
+    <Content Include="dll\policy.2.0.Npgsql.dll" />
+    <Content Include="dll\Wkb.dll" />
+    <Content Include="dll\Wkb.pdb" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
