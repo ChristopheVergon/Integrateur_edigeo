@@ -4,7 +4,7 @@ Décompressez les fichiers tar.bz2 dans un répertoire, définissez un répertoi
 
 Exemple :
 
-![exemple arborescence](images/repertoire.jpg)
+![exemple arborescence](images/Repertoire.JPG)
 
 Ici le répertoire principal sera 2016.
 
