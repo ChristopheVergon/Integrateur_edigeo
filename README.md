@@ -8,3 +8,6 @@ Tumasgiu Rossini & Christophe VERGON - GIRTEC
 ## Avertissements
 Ce logiciel est livré tel quel sans garantie aucune.
 Il s'agit de la version BETA.
+## Utilisation stand alone
+Dans le répertoire binaire, téléchargez l'archive zip,
+décompressez la sur votre ordinateur et lancez setup.exe
