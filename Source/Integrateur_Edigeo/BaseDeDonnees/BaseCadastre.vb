@@ -526,9 +526,9 @@ Public Class BaseCadastre
         m_cmd.Dispose()
     End Sub
     Private Idcommune As Integer
-    Public Function CommuneExiste(ByVal insee As String) As Integer
+    Public Function CommuneExiste(ByVal insee As String, ByVal nomcom As String) As Integer
         m_cmd.Connection = mPostGisCnn
-        m_cmd.CommandText = "SELECT idcommune FROM " & SchemaName & ".commune WHERE insee='" & insee & "';"
+        m_cmd.CommandText = "SELECT idcommune FROM " & SchemaName & ".commune WHERE insee='" & insee & "' AND nom='" & nomcom & "';"
 
         m_ds = New System.Data.DataSet
         m_da.SelectCommand = m_cmd
@@ -566,7 +566,7 @@ Public Class BaseCadastre
         Dim nom As Integer = SURF.IndexOfAttribut("TEX2_id")
         Dim insee As Integer = SURF.IndexOfAttribut("IDU_id")
 
-        Idcommune = CommuneExiste(SURF.ValeurAtt(insee))
+        Idcommune = CommuneExiste(SURF.ValeurAtt(insee), SURF.ValeurAtt(nom).Replace("'", "_"))
 
         If Idcommune = -1 Then
             Dim PO As New POLYGON

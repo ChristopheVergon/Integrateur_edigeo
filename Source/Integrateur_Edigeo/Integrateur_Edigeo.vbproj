@@ -136,10 +136,16 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="enums.vb" />
-    <Compile Include="Form2.Designer.vb">
-      <DependentUpon>Form2.vb</DependentUpon>
+    <Compile Include="FormSRID.Designer.vb">
+      <DependentUpon>FormSRID.vb</DependentUpon>
     </Compile>
-    <Compile Include="Form2.vb">
+    <Compile Include="FormSRID.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormOption.Designer.vb">
+      <DependentUpon>FormOption.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FormOption.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormInegrationPostgis.Designer.vb">
@@ -244,8 +250,11 @@
       <DependentUpon>Dialogconnection.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form2.resx">
-      <DependentUpon>Form2.vb</DependentUpon>
+    <EmbeddedResource Include="FormSRID.resx">
+      <DependentUpon>FormSRID.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormOption.resx">
+      <DependentUpon>FormOption.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormInegrationPostgis.resx">
       <DependentUpon>FormInegrationPostgis.vb</DependentUpon>
