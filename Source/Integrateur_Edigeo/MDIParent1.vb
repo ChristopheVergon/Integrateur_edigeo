@@ -197,8 +197,9 @@ Public Class MDIParent1
 
             End If
 
-            MsgBox("Fichiers THF chargés", MsgBoxStyle.ApplicationModal)
-            MsgBox("Pensez à régler le nombre de process dans le menu option, prêt pour l'intégration", MsgBoxStyle.ApplicationModal)
+            MsgBox("Fichiers THF chargés" & vbCrLf & "Pensez à régler le nombre de process dans le menu option, prêt pour l'intégration", MsgBoxStyle.ApplicationModal)
+
+
         Else
             MsgBox("Abandon", MsgBoxStyle.Critical)
             Me.Cursor = Cursors.Default
@@ -206,6 +207,11 @@ Public Class MDIParent1
         End If
 
         Me.Cursor = Cursors.Default
+
+        If FormSRID.ShowDialog = Windows.Forms.DialogResult.OK Then
+        Else
+            MsgBox("Abandon", MsgBoxStyle.Critical)
+        End If
 
     End Sub
     Public Sub IntegrationPolygonale()
