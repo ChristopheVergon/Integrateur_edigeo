@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>630</x>
+      <y>120</y>
+      <w>210</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>commune
+--
+idcommune integer
+nom varchar[255]
+insee varchar[3]
+the_geom POLYGON
+the_point POINT
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>630</x>
+      <y>320</y>
+      <w>210</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>section
+--
+idsection integer
+ptrcommune integer
+fusion varchar[3]
+the_geom POLYGON
+the_point POINT
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>720</x>
+      <y>230</y>
+      <w>50</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1..n</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1090</x>
+      <y>940</y>
+      <w>210</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>borne_parcelle
+--
+idborneparcelle integer
+ptrparcelle integer
+the_geom POINT
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>720</x>
+      <y>430</y>
+      <w>50</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1..n</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;130.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>620</x>
+      <y>780</y>
+      <w>210</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>parcelle
+--
+idparcelle integer
+ptrsubsection integer
+numero varchar[255]
+millesime varchar[4]
+active boolean
+the_geom POLYGON
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>720</x>
+      <y>670</y>
+      <w>50</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1..n</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;110.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1400</x>
+      <y>280</y>
+      <w>210</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>voiep
+--
+idvoiep integer
+valeur varchar[255]
+police varchar[255]
+hauteur real
+angle real
+the_geom POINT
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>620</x>
+      <y>560</y>
+      <w>210</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>subsection
+--
+idsubsection integer
+ptrsection integer
+nom varchar[10]
+the_geom POLYGON
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>820</x>
+      <y>840</y>
+      <w>290</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1..n</panel_attributes>
+    <additional_attributes>10.0;10.0;270.0;150.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1400</x>
+      <y>70</y>
+      <w>210</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>batiment
+--
+idbatiment integer
+nom varchar[255]
+dur boolean
+millesime varchar[4]
+active boolean
+the_geom POLYGON
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1080</x>
+      <y>220</y>
+      <w>210</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>tpoint
+--
+idtpoint integer
+ptrcommune integer
+valeur varchar[255]
+symbol integer
+ori real
+the_geom LINESTRING
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1090</x>
+      <y>620</y>
+      <w>210</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>textparcelle
+--
+idtextparcelle integer
+ptrparcelle integer
+numero varchar[255]
+the_geom POINT
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>820</x>
+      <y>820</y>
+      <w>290</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1..n</panel_attributes>
+    <additional_attributes>10.0;10.0;270.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1090</x>
+      <y>1070</y>
+      <w>210</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>symblim_parcelle
+--
+idsymblim_parcelle integer
+ptrparcelle integer
+sym_id integer
+ori_id numeric(9,6)
+the_geom POINT
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>820</x>
+      <y>880</y>
+      <w>290</w>
+      <h>270</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1..n</panel_attributes>
+    <additional_attributes>10.0;10.0;80.0;240.0;270.0;240.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1090</x>
+      <y>780</y>
+      <w>210</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>numvoie
+--
+idnumvoie integer
+ptrparcelle integer
+numero varchar[255]
+the_geom POINT
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>820</x>
+      <y>660</y>
+      <w>290</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1..n</panel_attributes>
+    <additional_attributes>10.0;140.0;120.0;10.0;270.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>130</x>
+      <y>500</y>
+      <w>210</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>zonecommuni
+--
+idzonecommuni integer
+ptrcommune integer
+the_geom LINESTRING
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>830</x>
+      <y>110</y>
+      <w>270</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1..n</panel_attributes>
+    <additional_attributes>10.0;50.0;90.0;10.0;250.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1080</x>
+      <y>70</y>
+      <w>210</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>topoline
+--
+idtopoline integer
+ptrcommune integer
+nom varchar[255]
+symbol integer
+the_geom LINESTRING
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>830</x>
+      <y>160</y>
+      <w>270</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1..n</panel_attributes>
+    <additional_attributes>10.0;10.0;250.0;110.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1080</x>
+      <y>380</y>
+      <w>210</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>tsurf
+--
+idtsurf integer
+ptrcommune integer
+valeur varchar[255]
+symbol integer
+the_geom POLYGON
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>830</x>
+      <y>190</y>
+      <w>270</w>
+      <h>270</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1..n</panel_attributes>
+    <additional_attributes>10.0;10.0;120.0;240.0;250.0;240.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>130</x>
+      <y>900</y>
+      <w>210</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lieudit
+--
+idlieudit integer
+the_geom POLYGON
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>130</x>
+      <y>200</y>
+      <w>210</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>tronroute
+--
+idtronroute integer
+ptrcommune integer
+the_geom LINESTRING
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>130</x>
+      <y>670</y>
+      <w>210</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>label
+--
+idlabel integer
+valeur varchar[255]
+ptrobj integer
+reftable smallint
+ordre smallint
+police varchar[255]
+hauteur real
+angle real
+the_geom POINT
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>130</x>
+      <y>340</y>
+      <w>210</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>tronfluv
+--
+idtronfluv integer
+ptrcommune integer
+the_geom POLYGON
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>330</x>
+      <y>140</y>
+      <w>320</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1..n</panel_attributes>
+    <additional_attributes>300.0;10.0;140.0;10.0;10.0;110.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>330</x>
+      <y>160</y>
+      <w>320</w>
+      <h>250</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1..n</panel_attributes>
+    <additional_attributes>300.0;10.0;150.0;50.0;10.0;230.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>330</x>
+      <y>190</y>
+      <w>320</w>
+      <h>380</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1..n</panel_attributes>
+    <additional_attributes>300.0;10.0;150.0;50.0;150.0;350.0;10.0;350.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>20</x>
+      <y>20</y>
+      <w>430</w>
+      <h>1000</h>
+    </coordinates>
+    <panel_attributes>Gestion des écritures table label :
+tronfluv : reftable = 1
+tronroute : reftable = 2
+zonecommuni : reftable = 3
+lieudit : reftable = 4
+
+Clef composite : valeur reftable + ptrobj
+Exemple : si reftable = 4 ptrobj = idlieudit
+--
+bg=blue</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>1340</x>
+      <y>20</y>
+      <w>350</w>
+      <h>210</h>
+    </coordinates>
+    <panel_attributes>La relation bâtiment parcelle non gérée pour l'instant
+bg=blue</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>630</x>
+      <y>10</y>
+      <w>620</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>Modèle Conceptuel Plan Cadastral
+bg=red
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
