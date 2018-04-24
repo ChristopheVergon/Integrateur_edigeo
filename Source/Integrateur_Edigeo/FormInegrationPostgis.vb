@@ -61,6 +61,8 @@
     Public CarreRougeInstance As New AvancementDelegate(AddressOf CarreRouge)
     Public CarreVertInstance As New AvancementDelegate(AddressOf CarreVert)
 
+   
+
     Private Sub DeuxCarre(ByVal chaine As String, ByVal position As Single)
 
         Dim f As New Font("Arial", 12, FontStyle.Regular, GraphicsUnit.Pixel)
@@ -121,8 +123,17 @@
         mBuffer.Render(hdc)
         e.Graphics.ReleaseHdc(hdc)
     End Sub
+    Private thr_integre As System.Threading.Thread
+
+    Public ReadOnly Property thr_integration() As System.Threading.Thread
+        Get
+            Return thr_integre
+        End Get
+
+    End Property
+
     Public Sub Integre()
-        Dim thr_integre As New System.Threading.Thread(AddressOf integration)
+        thr_integre = New System.Threading.Thread(AddressOf integration)
         thr_integre.Start()
     End Sub
 
@@ -162,8 +173,19 @@
             End If
 
         Loop
-
+        If arret_general Then
+            mArret = True
+        End If
     End Sub
+
+    Private mArret As Boolean = False
+    Public ReadOnly Property Arret() As Boolean
+        Get
+            Return mArret
+        End Get
+
+    End Property
+
     Private Sub IntegrationPostgis(ByVal count As Integer)
 
         Dim Y As Single = 0

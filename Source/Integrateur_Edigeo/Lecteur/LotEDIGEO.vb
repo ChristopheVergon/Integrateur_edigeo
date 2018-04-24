@@ -202,7 +202,7 @@
         arg1(0) = "Initialisation dictionnaire Nomenclature"
         arg1(1) = Y
 
-        Fint.Invoke(Fint.CarreRougeInstance, arg1)
+        If Fint.testinvoke(Fint.CarreRougeInstance, arg1) Then Exit Sub
         Y = Y + 15
 
 
@@ -211,7 +211,7 @@
 
         arg1(0) = "Initialisation dictionnaire MCD"
         arg1(1) = Y
-        Fint.Invoke(Fint.DeuxCarreInstance, arg1)
+        If Fint.testinvoke(Fint.DeuxCarreInstance, arg1) Then Exit Sub
 
 
         Y = Y + 15
@@ -223,27 +223,26 @@
 
         arg1(0) = "Initialisation dictionnaire VECTEURS"
         arg1(1) = Y
-        Fint.Invoke(Fint.DeuxCarreInstance, arg1)
-
+        If Fint.testinvoke(Fint.DeuxCarreInstance, arg1) Then Exit Sub
 
         Y = Y + 15
         mListeVEC.ForEach(AddressOf init)
 
         arg1(1) = Y
-        Fint.Invoke(Fint.CarreVertInstance, arg1)
+        If Fint.testinvoke(Fint.CarreVertInstance, arg1) Then Exit Sub
 
         Y = mListeVEC(0).Y
 
         arg1(0) = "Initialisation des sous-dictionnaires de type "
         arg1(1) = Y
-        Fint.Invoke(Fint.CarreRougeInstance, arg1)
+        If Fint.testinvoke(Fint.CarreRougeInstance, arg1) Then Exit Sub
 
         Y = Y + 15
         mListeVEC.ForEach(AddressOf initsousdic)
 
         arg1(0) = "Initialisation Géomètrie"
         arg1(1) = Y
-        Fint.Invoke(Fint.DeuxCarreInstance, arg1)
+        If Fint.testinvoke(Fint.DeuxCarreInstance, arg1) Then Exit Sub
 
 
         Y = Y + 15
@@ -251,7 +250,7 @@
 
         arg1(0) = "Initialisation dictionnaire ObjetEDIGEO"
         arg1(1) = Y
-        Fint.Invoke(Fint.DeuxCarreInstance, arg1)
+        If Fint.testinvoke(Fint.DeuxCarreInstance, arg1) Then Exit Sub
 
 
         Y = Y + 15
@@ -261,7 +260,7 @@
 
         arg1(0) = "Initialisation de la Semantique"
         arg1(1) = Y
-        Fint.Invoke(Fint.DeuxCarreInstance, arg1)
+        If Fint.testinvoke(Fint.DeuxCarreInstance, arg1) Then Exit Sub
 
         Y = Y + 15
 
@@ -269,7 +268,7 @@
 
         arg1(0) = "Initialisation couche objet métier"
         arg1(1) = Y
-        Fint.Invoke(Fint.DeuxCarreInstance, arg1)
+        If Fint.testinvoke(Fint.DeuxCarreInstance, arg1) Then Exit Sub
 
 
         Y = Y + 15
@@ -277,7 +276,7 @@
         ConstruitCouches()
 
         arg1(1) = Y
-        Fint.Invoke(Fint.CarreVertInstance, arg1)
+        If Fint.testinvoke(Fint.CarreVertInstance, arg1) Then Exit Sub
 
 
         'mFint.PictureBox1.CreateGraphics.DrawString("Fin de l'intégration Edigéo", f, Brushes.Black, 15, Y)

@@ -48,6 +48,10 @@ Public Class MDIParent1
     Public Sub GereTampon(E As Echange_object, ajout As Boolean, rang As Integer)
 
         SyncLock verrou_tampon
+            If rang = -1 Then
+                Tampon.Clear()
+                Exit Sub
+            End If
 
             If ajout Then
 
@@ -67,7 +71,7 @@ Public Class MDIParent1
 
 
         If Tampon.Count = 0 Then
-            If nblot_a_traiter = nblottraites Then
+            If nblottraites >= nblot_a_traiter Then
                 arret_general = True
                 arret_recherche = True
                 Exit Sub
@@ -216,8 +220,8 @@ Public Class MDIParent1
     End Sub
     Public Sub IntegrationPolygonale()
 
-        ReDim PIDT(nbprocedigeo)
-        ReDim FIPG(nbprocposgis)
+        ReDim PIDT(nbprocedigeo - 1)
+        ReDim FIPG(nbprocposgis - 1)
 
 
         For i = 0 To nbprocedigeo_gros - 1
@@ -261,9 +265,54 @@ Public Class MDIParent1
 
 
     Private Sub ExitToolsStripMenuItem_Click(ByVal sender As Object, ByVal e As EventArgs) Handles ExitToolStripMenuItem.Click
-        Me.Close()
-    End Sub
 
+        If finedigeo = False Then
+
+            If MsgBox("Processus en cours, " & vbCrLf & "voulez vous réellemnt quitter le programme ?", MsgBoxStyle.OkCancel) = MsgBoxResult.Ok Then
+
+                nblottraites = nblot_a_traiter
+                OrderedTHF._Col.Clear()
+                GereTampon(Nothing, False, -1)
+                finedigeo = True
+                arret_general = True
+                Thr_Candidat.Abort()
+                For i = 0 To nbprocedigeo - 1
+                    PIDT(i).thread_stop()
+                Next
+
+                th_arret = New System.Threading.Thread(AddressOf testarret)
+
+                th_arret.Start()
+
+
+
+            End If
+
+        Else
+
+            Me.Close()
+
+        End If
+
+    End Sub
+    Private th_arret As System.Threading.Thread
+    Private Function testarret() As Boolean
+        
+        Dim b = True
+        Do While True
+            For i = 0 To FIPG.Length - 1
+                b = b And FIPG(i).Arret
+            Next
+            If b Then
+                Exit Do
+            Else
+                b = True
+            End If
+        Loop
+        Me.Invoke(Sub() Me.Close())
+
+
+    End Function
     Private Sub CascadeToolStripMenuItem_Click(ByVal sender As Object, ByVal e As EventArgs) Handles CascadeToolStripMenuItem.Click
         Me.LayoutMdi(MdiLayout.Cascade)
     End Sub
@@ -339,7 +388,7 @@ Public Class MDIParent1
 
                 IntegrationPolygonale()
 
-                MsgBox("Commencer l'intégraytion", MsgBoxStyle.ApplicationModal)
+                MsgBox("Commencer l'intégration", MsgBoxStyle.ApplicationModal)
 
                 Timer1.Start()
 

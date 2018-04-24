@@ -5,6 +5,7 @@ Public Class FormSRID
     Private Sub FormSRID_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Me.ControlBox = False
         SRID3942.Checked = True
+        Me.CenterToScreen()
     End Sub
 
     Private Sub RadioButton1_CheckedChanged(sender As Object, e As EventArgs) Handles SRID3949.CheckedChanged

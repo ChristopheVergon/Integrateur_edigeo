@@ -81,6 +81,17 @@ Public Class FormIntegration
     Public CarreRougeInstance As New AvancementDelegate(AddressOf CarreRouge)
     Public CarreVertInstance As New AvancementDelegate(AddressOf CarreVert)
 
+    Public Function testinvoke(del As System.Delegate, ByVal ParamArray obj() As Object) As Boolean
+        If arret_general Then
+            Return True
+        Else
+            Me.Invoke(del, obj)
+            Return False
+        End If
+    End Function
+
+
+
     Private Sub TitreLot(ByVal chaine As String, ByVal position As Single)
         mBuffer.Graphics.Clear(Color.White)
         Dim f As New Font("Arial", 12, FontStyle.Regular, GraphicsUnit.Pixel)
@@ -121,6 +132,10 @@ Public Class FormIntegration
 
     Private Sub FormIntegration_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
         mBuffer.Dispose()
+    End Sub
+    Public Sub thread_stop()
+        thr_edigeo.Abort()
+        'System.Threading.Thread.CurrentThread.Abort()
     End Sub
     Private Sub FormIntegration_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
@@ -174,14 +189,14 @@ Public Class FormIntegration
 
                 mLotForWork = New THF(OrderedTHF._Col(OrderedTHF._Col.Count - 1).Chemin & "\" & OrderedTHF._Col(OrderedTHF._Col.Count - 1).Nom)
                 OrderedTHF._Col.RemoveAt(OrderedTHF._Col.Count - 1)
-            
+
 
             Else
 
                 petit = petit + 1
                 mLotForWork = New THF(OrderedTHF._Col(0).Chemin & "\" & OrderedTHF._Col(0).Nom)
                 OrderedTHF._Col.RemoveAt(0)
-            
+
 
             End If
             Return 1
@@ -213,7 +228,9 @@ Public Class FormIntegration
                 Dim la As Echange_object
                 la = IntegrationEdigeo_seule(mLotForWork.Chemin & "\" & mLotForWork.Nom, count)
 
-
+                If la Is Nothing And arret_general Then
+                    Exit Do
+                End If
                 count = count + 1
                 arg1(0) = count
                 mFlog.Close()
@@ -226,14 +243,15 @@ Public Class FormIntegration
 
                 MDIParent1.GereTampon(la, True, 0)
                 nblot_traites = nblot_traites + 1
-                Me.Invoke(ProgresInstance)
+                'Me.Invoke(ProgresInstance)
+                testinvoke(ProgresInstance)
                 mLotForWork = Nothing
                 If cherche_lot() = 0 Then
                     finedigeo = True
                 End If
             Loop
         End If
-        
+
 
 
     End Sub
@@ -266,10 +284,14 @@ Public Class FormIntegration
             Return Nothing
             Exit Function
         End If
+        If arret_general Then
+            Return Nothing
+        Else
+            Dim la As New Echange_object(MonLecteur.THF.ListeCouche, MonLecteur.THF.NomLot, thf.ToString.Substring(0, thf.ToString.Length - 4))
 
-        Dim la As New Echange_object(MonLecteur.THF.ListeCouche, MonLecteur.THF.NomLot, thf.ToString.Substring(0, thf.ToString.Length - 4))
-
-        Return la
+            Return la
+        End If
+        
 
     End Function
 
@@ -284,10 +306,11 @@ Public Class FormIntegration
         'Label1.Text = "Nb de lots : " & Me.THFS.Count
         PictureBox1.Refresh()
 
-        Dim THRIntegration As New Thread(AddressOf Integration_Edigeo_topo_unlocked)
+        'Dim THRIntegration As New Thread(AddressOf Integration_Edigeo_topo_unlocked)
 
-        THRIntegration.Start()
+        'THRIntegration.Start()
 
+        Integration_Edigeo_topo_unlocked()
     End Sub
     Public Sub Integration_Edigeo_topo_unlocked()
 
@@ -313,4 +336,7 @@ Public Class FormIntegration
     End Sub
 
 
+    Private Sub PictureBox1_Click(sender As Object, e As EventArgs) Handles PictureBox1.Click
+
+    End Sub
 End Class
