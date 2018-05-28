@@ -11,3 +11,4 @@ Il s'agit de la version BETA.
 ## Utilisation stand alone
 Dans le répertoire binaire, téléchargez l'archive zip,
 décompressez la sur votre ordinateur et lancez setup.exe
+https://github.com/ChristopheVergon/Integrateur_edigeo/raw/master/Binaires/Integrateur_edigeo_1.01.zip
