@@ -120,6 +120,7 @@
     <Compile Include="AboutBox1.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="ApplicationEvents.vb" />
     <Compile Include="BaseDeDonnees\BaseCadastre.vb" />
     <Compile Include="BaseDeDonnees\BasePostGis.vb" />
     <Compile Include="Dialog1.Designer.vb">

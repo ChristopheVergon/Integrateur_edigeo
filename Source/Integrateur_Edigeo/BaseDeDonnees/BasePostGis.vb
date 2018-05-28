@@ -99,7 +99,7 @@ Public Class BasePostGis
             Exit Sub
         End Try
 
-        If Not DatabaseExist() Then
+        If Not Database_Exist() Then
             CreateEmptyDataBase(NomSchema)
             mBaseExiste = False
         Else
@@ -138,7 +138,7 @@ Public Class BasePostGis
 
         'm_cmd.CommandText = "CREATE EXTENTION postgis;"
         'm_cmd.ExecuteNonQuery()
-        
+
         m_cmd.CommandText = "CREATE EXTENSION postgis;"
         m_cmd.ExecuteNonQuery()
         m_cmd.CommandText = "CREATE EXTENSION postgis_topology;"
@@ -149,19 +149,11 @@ Public Class BasePostGis
         m_cmd.CommandText = "ALTER DATABASE " & databasename & " SET search_path=""$user"", public, topology;"
         m_cmd.ExecuteNonQuery()
 
-        'mPostGisCnn.Close()
-        'ConnectionStringB.Database = "" & databasename & ""
-        'mPostGisCnn = New Npgsql.NpgsqlConnection(ConnectionStringB.ConnectionString)
-        'mPostGisCnn.Open()
-
-
-        'm_cmd.Connection = mPostGisCnn
-
         If NomSchema <> "public" Then
             m_cmd.CommandText = "CREATE SCHEMA " & NomSchema & ";"
             m_cmd.ExecuteNonQuery()
-            m_cmd.CommandText = "CREATE SCHEMA napoleonien;"
-            m_cmd.ExecuteNonQuery()
+            'm_cmd.CommandText = "CREATE SCHEMA napoleonien;"
+            'm_cmd.ExecuteNonQuery()
         End If
 
         mPostGisCnn.Close()
@@ -169,7 +161,7 @@ Public Class BasePostGis
     End Sub
 
 
-    Protected Function DatabaseExist() As Boolean
+    Protected Function Database_Exist() As Boolean
 
         m_cmd = New Npgsql.NpgsqlCommand
         m_cmd.CommandText = "SELECT COUNT(*) FROM pg_catalog.pg_database WHERE datname = :database_name"
@@ -178,6 +170,65 @@ Public Class BasePostGis
         Return m_cmd.ExecuteScalar > 0
         m_cmd.Dispose()
 
+    End Function
+
+    Protected Function schema_exists(schemaname As String) As Boolean
+        Dim ds As New DataSet
+
+        m_cmd = New NpgsqlCommand
+        m_cmd.Connection = mPostGisCnn
+        m_cmd.CommandText = "SELECT schema_name FROM information_schema.schemata WHERE schema_name='" & schemaname & "';"
+        m_da = New NpgsqlDataAdapter
+        m_da.SelectCommand = m_cmd
+        m_da.Fill(ds)
+
+        m_da.Dispose()
+        m_cmd.Dispose()
+
+        If ds.Tables(0).Rows.Count > 0 Then
+            Return True
+        Else
+            Return False
+        End If
+    End Function
+
+    Protected Sub Create_schema(schemaname As String)
+
+        If schemaname <> "public" Then
+            m_cmd = New NpgsqlCommand
+            m_cmd.Connection = mPostGisCnn
+            m_cmd.CommandText = "CREATE SCHEMA '" & schemaname & "';"
+            m_cmd.ExecuteNonQuery()
+        End If
+
+    End Sub
+    Protected Function table_exists(nomschema As String, nomtable As String) As Boolean
+        Dim ds As New DataSet
+
+        m_cmd = New NpgsqlCommand
+        m_cmd.Connection = mPostGisCnn
+        m_cmd.CommandText = "select table_name from information_schema.tables WHERE table_schema=:p AND table_name=:p1;"
+
+        Dim p As New NpgsqlParameter("p", nomschema)
+        m_cmd.Parameters.Add(p)
+
+        Dim p1 As New NpgsqlParameter("p1", nomtable)
+        m_cmd.Parameters.Add(p1)
+
+        m_da = New NpgsqlDataAdapter
+        m_da.SelectCommand = m_cmd
+
+
+        m_da.Fill(ds)
+
+        m_da.Dispose()
+        m_cmd.Dispose()
+
+        If ds.Tables(0).Rows.Count > 0 Then
+            Return True
+        Else
+            Return False
+        End If
     End Function
 
     Public Function Intersection(s1 As ObjetEDIGEO_SURF, s2 As ObjetEDIGEO_SURF) As Integer

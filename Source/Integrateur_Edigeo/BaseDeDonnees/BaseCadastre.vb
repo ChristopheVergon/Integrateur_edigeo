@@ -15,6 +15,7 @@ Public Class BaseCadastre
     End Property
 
     Public Sub New(ByVal databasename As String, ByVal cnn As NpgsqlConnectionStringBuilder, ByVal NomSchema As String, Optional ByVal ConDirect As Boolean = False)
+
         MyBase.New(databasename, cnn, NomSchema, ConDirect)
 
 
@@ -28,32 +29,78 @@ Public Class BaseCadastre
 
         cnngen = mPostGisCnn
 
-        If mBaseExiste Then
-
-        Else
-            InitTable()
+        If Not schema_exists(NomSchema) Then
+            Create_schema(NomSchema)
         End If
+
+
+        InitTable()
+
 
     End Sub
     Private Sub InitTable()
-        CreateTableParcelle()
-        CreateTableSubSection()
-        CreateTableSection()
-        CreateTableCommune()
-        CreateTableBatiment()
-        CreateTableLieuDit()
-        CreateTableLabel()
-        CreateTableTronFluv()
-        CreateTableZoneCommuni()
-        CreateTableTronRoute()
-        CreateTableTopoLine()
-        CreateTableTPoint()
-        CreateTableVoiep()
-        CreateTableTsurf()
+
+        If Not table_exists(SchemaName, "parcelle") Then
+            CreateTableParcelle()
+        End If
+
+        If Not table_exists(SchemaName, "lot") Then
+            CreateTableLot()
+        End If
+        If Not table_exists(SchemaName, "surface") Then
+            CreateTableSurface()
+        End If
+        If Not table_exists(SchemaName, "subsection") Then
+            CreateTableSubSection()
+        End If
+        If Not table_exists(SchemaName, "section") Then
+            CreateTableSection()
+        End If
+        If Not table_exists(SchemaName, "commune") Then
+            CreateTableCommune()
+        End If
+        If Not table_exists(SchemaName, "batiment") Then
+            CreateTableBatiment()
+        End If
+        If Not table_exists(SchemaName, "lieudit") Then
+            CreateTableLieuDit()
+        End If
+        If Not table_exists(SchemaName, "label") Then
+            CreateTableLabel()
+        End If
+        If Not table_exists(SchemaName, "tronfluv") Then
+            CreateTableTronFluv()
+        End If
+        If Not table_exists(SchemaName, "zonecommuni") Then
+            CreateTableZoneCommuni()
+        End If
+        If Not table_exists(SchemaName, "tronroute") Then
+            CreateTableTronRoute()
+        End If
+        If Not table_exists(SchemaName, "topoline") Then
+            CreateTableTopoLine()
+        End If
+        If Not table_exists(SchemaName, "tpoint") Then
+            CreateTableTPoint()
+        End If
+        If Not table_exists(SchemaName, "voiep") Then
+            CreateTableVoiep()
+        End If
+        If Not table_exists(SchemaName, "tsurf") Then
+            CreateTableTsurf()
+        End If
+        If Not table_exists(SchemaName, "selectedparcelle") Then
+            CreateTableSelectedParcelle()
+        End If
+
     End Sub
+
+
     Private Sub CreateTableParcelle()
         m_cmd = New NpgsqlCommand
         m_cmd.Connection = mPostGisCnn
+
+
 
         m_cmd.CommandText = "CREATE TABLE " & SchemaName & ".parcelle (idparcelle serial, ptrsubsection integer, numero varchar(255)," _
 & " contenance integer, dateacte varchar(8), primitive varchar(4),arpente boolean, nfp boolean, anomalie integer,ptrparcasspdl integer," _
@@ -62,7 +109,7 @@ Public Class BaseCadastre
         m_cmd.ExecuteNonQuery()
         m_cmd.CommandText = "SELECT AddGeometryColumn('" & SchemaName & "','parcelle','the_geom'," & SRID & ",'POLYGON',2);"
         m_cmd.ExecuteNonQuery()
-        
+
 
         m_cmd.CommandText = "CREATE TABLE " & SchemaName & ".textparcelle (idtextparcelle serial,ptrparcelle integer, numero varchar(255));"
         m_cmd.ExecuteNonQuery()
@@ -75,7 +122,7 @@ Public Class BaseCadastre
         m_cmd.ExecuteNonQuery()
 
 
-        m_cmd.CommandText = "CREATE TABLE " & SchemaName & ".SYMBLIM_PARCELLE (idsymblim_parcelle serial,sym_id integer,ori_id numeric(9,6), ptrparcelle int)"
+        m_cmd.CommandText = "CREATE TABLE " & SchemaName & ".symblim_parcelle (idsymblim_parcelle serial,sym_id integer,ori_id numeric(9,6), ptrparcelle int);"
         m_cmd.ExecuteNonQuery()
         m_cmd.CommandText = "SELECT AddGeometryColumn ('" & SchemaName & "','symblim_parcelle', 'the_geom'," & SRID & ",'POINT',2);"
         m_cmd.ExecuteNonQuery()
@@ -90,9 +137,23 @@ Public Class BaseCadastre
 
         m_cmd.Dispose()
     End Sub
-  
+    Public Sub CreateTableSelectedParcelle()
+        m_cmd.CommandText = "CREATE TABLE " & SchemaName & ".selectedparcelle (idparcelle integer);"
+        m_cmd.ExecuteNonQuery()
+        m_cmd.CommandText = "SELECT AddGeometryColumn('" & SchemaName & "','selectedparcelle','the_geom'," & SRID & ",'POLYGON',2);"
+        m_cmd.ExecuteNonQuery()
+    End Sub
+    Public Sub DeleteTableSelectParcelle()
+
+        m_cmd.CommandText = "DELETE FROM " & SchemaName & ".selectedparcelle;"
+        m_cmd.ExecuteNonQuery()
+    End Sub
+    Public Sub DeleteTableSelectParcelle(ByVal idparc As Integer)
+        m_cmd.CommandText = "DELETE FROM " & SchemaName & ".selectedparcelle WHERE idparcelle=" & idparc & ";"
+        m_cmd.ExecuteNonQuery()
+    End Sub
     Private Sub CreateTableBatiment()
-        
+
         m_ds = New System.Data.DataSet
 
 
@@ -105,11 +166,38 @@ Public Class BaseCadastre
 
     End Sub
 
-   
+    Public Sub CreateTableProp()
+        m_cmd = New NpgsqlCommand
+        m_cmd.Connection = mPostGisCnn
+        m_cmd.CommandText = "CREATE TABLE IF NOT EXISTS " & SchemaName & ".comptecommunal (idcomptecommunal serial,valeur varchar(6),ptrcommune integer);"
+        m_cmd.ExecuteNonQuery()
+        m_cmd.CommandText = "CREATE TABLE IF NOT EXISTS " & SchemaName & ".proprietaire (idproprietaire serial," _
+        & "dnumper varchar(6),destavis boolean,physique boolean, codephysique integer,nature varchar(3)," _
+        & "groupe varchar(2),sigle varchar(10),siglemajic varchar(7),denomination varchar(60),type3 integer, type4 integer,type5 integer,type6 integer," _
+        & "adr3 varchar(30), adr4 varchar(36), adr5 varchar(30), adr6 varchar(32), codepays varchar(3), depadr varchar(2),inseeadr varchar(3)," _
+        & "qualite varchar(3), nom varchar(30),prenom varchar(15), datenaissance varchar(10), lieunaissance varchar(58), complement varchar(3)," _
+        & "nomcomplement varchar(30), prenomcomplement varchar(15),departement varchar(2));"
+        m_cmd.ExecuteNonQuery()
+        m_cmd.CommandText = "CREATE TABLE IF NOT EXISTS " & SchemaName & ".jointcomptecommunalproprietaire (ptrcomptecommunal integer, ptrproprietaire integer,naturedroit varchar(2) ,destavis boolean);"
+        m_cmd.ExecuteNonQuery()
+        m_cmd.CommandText = "CREATE TABLE IF NOT EXISTS " & SchemaName & ".jointlotproprietaire (ptrlot integer, ptrproprietaire integer,naturedroit varchar(2),destavis boolean);"
+        m_cmd.ExecuteNonQuery()
+        m_cmd.Dispose()
+    End Sub
 
 
-   
-    
+    Private Sub CreateTableSurface()
+        m_cmd = New NpgsqlCommand
+        m_cmd.Connection = mPostGisCnn
+        m_cmd.CommandText = "CREATE TABLE " & SchemaName & ".surface (idsurface serial, ptrparcelle integer, ptrlot integer, contenance integer, groupe varchar(2), sousgroupe varchar(2), groupeclasse varchar(2), culture varchar(5), numpdl varchar(3), numlot varchar(7), lettre varchar(2));"
+        m_cmd.ExecuteNonQuery()
+        m_cmd.Dispose()
+    End Sub
+    Private Sub CreateTableLot()
+        m_cmd.CommandText = "CREATE TABLE " & SchemaName & ".lot (idlot serial, ptrparcelle integer, comptecom varchar(6),numlot varchar(7)," _
+       & "naturelot integer, surfacelot integer,numerateur varchar (9), denominateur varchar(9), dateactelot varchar(8), numpdl varchar(3));"
+        m_cmd.ExecuteNonQuery()
+    End Sub
 
     Private Sub CreateTableSubSection()
 
@@ -184,7 +272,7 @@ Public Class BaseCadastre
     Public Sub CreateTableZoneCommuni()
         m_cmd.CommandText = "CREATE TABLE " & SchemaName & ".zonecommuni (idzonecommuni serial,ptrcommune integer);"
         m_cmd.ExecuteNonQuery()
-       
+
         m_cmd.CommandText = "SELECT AddGeometryColumn('" & SchemaName & "','zonecommuni','the_geom'," & SRID & ",'LINESTRING',2);"
         m_cmd.ExecuteNonQuery()
     End Sub
@@ -192,7 +280,7 @@ Public Class BaseCadastre
     Public Sub CreateTableTronRoute()
         m_cmd.CommandText = "CREATE TABLE " & SchemaName & ".tronroute (idtronroute serial,ptrcommune integer);"
         m_cmd.ExecuteNonQuery()
-      
+
         m_cmd.CommandText = "SELECT AddGeometryColumn('" & SchemaName & "','tronroute','the_geom'," & SRID & ",'LINESTRING',2);"
         m_cmd.ExecuteNonQuery()
     End Sub
@@ -292,7 +380,7 @@ Public Class BaseCadastre
             m_cmd.CommandText = "INSERT INTO " & SchemaName & ".batiment (the_geom,dur,nom,millesime,active) VALUES (ST_GeomFromWKB(:wkb," & SRID & "),:dur,:nom,:an,true) RETURNING idbatiment;"
             m_cmd.ExecuteNonQuery()
 
-           
+
         Next
 
         m_cmd.Dispose()
@@ -439,14 +527,14 @@ Public Class BaseCadastre
             End Try
             'm_ds.Tables(0).Rows(0).Item(0)
 
-            
+
 
         Next
 
         m_cmd.Dispose()
     End Sub
 
-    
+
     Public Sub PopulateTpoint(ByVal la As DictionaryObjetEDIGEO, ByVal nomlot As String)
         m_cmd = New NpgsqlCommand
         m_cmd.Connection = mPostGisCnn
@@ -526,9 +614,9 @@ Public Class BaseCadastre
         m_cmd.Dispose()
     End Sub
     Private Idcommune As Integer
-    Public Function CommuneExiste(ByVal insee As String, ByVal nomcom As String) As Integer
+    Public Function CommuneExiste(ByVal insee As String) As Integer
         m_cmd.Connection = mPostGisCnn
-        m_cmd.CommandText = "SELECT idcommune FROM " & SchemaName & ".commune WHERE insee='" & insee & "' AND nom='" & nomcom & "';"
+        m_cmd.CommandText = "SELECT idcommune FROM " & SchemaName & ".commune WHERE insee='" & insee & "';"
 
         m_ds = New System.Data.DataSet
         m_da.SelectCommand = m_cmd
@@ -566,7 +654,7 @@ Public Class BaseCadastre
         Dim nom As Integer = SURF.IndexOfAttribut("TEX2_id")
         Dim insee As Integer = SURF.IndexOfAttribut("IDU_id")
 
-        Idcommune = CommuneExiste(SURF.ValeurAtt(insee), SURF.ValeurAtt(nom).Replace("'", "_"))
+        Idcommune = CommuneExiste(SURF.ValeurAtt(insee))
 
         If Idcommune = -1 Then
             Dim PO As New POLYGON
@@ -583,10 +671,10 @@ Public Class BaseCadastre
 
             '***********************************************************************************************************************************
             m_cmd.CommandText = "INSERT INTO " & SchemaName & ".commune (nom,insee,the_geom,the_point) VALUES ('" & SURF.ValeurAtt(nom).Replace("'", "_") & "','" & SURF.ValeurAtt(insee) & "',st_geomfromwkb(:wkb," & SRID & "),st_geomfromwkb(:wkbp," & SRID & ")) RETURNING idcommune;"
-                m_ds = New System.Data.DataSet
-                m_da.SelectCommand = m_cmd
-                m_da.Fill(m_ds)
-                Idcommune = m_ds.Tables(0).Rows(0).Item(0)
+            m_ds = New System.Data.DataSet
+            m_da.SelectCommand = m_cmd
+            m_da.Fill(m_ds)
+            Idcommune = m_ds.Tables(0).Rows(0).Item(0)
 
             m_cmd.CommandText = "INSERT INTO " & nomlot & " (ptrobj,refedigeo) VALUES (" & Idcommune & ",'" & SURF.NomLot & SURF.ID_Objet & "');"
             m_cmd.ExecuteNonQuery()
