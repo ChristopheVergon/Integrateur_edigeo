@@ -114,34 +114,51 @@
 
         'FormIntegration.PictureBox1.CreateGraphics.FillRectangle(Brushes.Red, 0, Y, 10, 10)
         'FormIntegration.PictureBox1.CreateGraphics.DrawString("Initialisation dictionnaire ARC", f, Brushes.Black, 15, Y)
+        Init("PAR", mDictionaryArc)
+        Init("PFE", mDictionaryFace)
+        Init("PNO", mDictionaryNoeud)
+        Init("FEA", mDictionaryObj)
+        Init("LNK", mDictionaryRelation)
+        'InitVECArc()
+        ''FormIntegration.PictureBox1.CreateGraphics.FillRectangle(Brushes.Green, 0, Y - 15, 10, 10)
 
-        InitVECArc()
+        ''FormIntegration.PictureBox1.CreateGraphics.FillRectangle(Brushes.Red, 0, Y, 10, 10)
+        ''FormIntegration.PictureBox1.CreateGraphics.DrawString("Initialisation dictionnaire FACE", f, Brushes.Black, 15, Y)
+
+        'InitVECFACE()
+        ''FormIntegration.PictureBox1.CreateGraphics.FillRectangle(Brushes.Green, 0, Y - 15, 10, 10)
+
+        ''FormIntegration.PictureBox1.CreateGraphics.FillRectangle(Brushes.Red, 0, Y, 10, 10)
+        ''FormIntegration.PictureBox1.CreateGraphics.DrawString("Initialisation dictionnaire NOEUD", f, Brushes.Black, 15, Y)
+
+        'InitVECNoeud()
+        ''FormIntegration.PictureBox1.CreateGraphics.FillRectangle(Brushes.Green, 0, Y - 15, 10, 10)
+
+        ''FormIntegration.PictureBox1.CreateGraphics.FillRectangle(Brushes.Red, 0, Y, 10, 10)
+        ''FormIntegration.PictureBox1.CreateGraphics.DrawString("Initialisation dictionnaire OBJET", f, Brushes.Black, 15, Y)
+
+        'InitVECOBJ()
+        ''FormIntegration.PictureBox1.CreateGraphics.FillRectangle(Brushes.Green, 0, Y - 15, 10, 10)
+
+        ''FormIntegration.PictureBox1.CreateGraphics.FillRectangle(Brushes.Red, 0, Y, 10, 10)
+        ''FormIntegration.PictureBox1.CreateGraphics.DrawString("Initialisation dictionnaire RELATION", f, Brushes.Black, 15, Y)
+
+        'InitVECREL()
         'FormIntegration.PictureBox1.CreateGraphics.FillRectangle(Brushes.Green, 0, Y - 15, 10, 10)
 
-        'FormIntegration.PictureBox1.CreateGraphics.FillRectangle(Brushes.Red, 0, Y, 10, 10)
-        'FormIntegration.PictureBox1.CreateGraphics.DrawString("Initialisation dictionnaire FACE", f, Brushes.Black, 15, Y)
+    End Sub
 
-        InitVECFACE()
-        'FormIntegration.PictureBox1.CreateGraphics.FillRectangle(Brushes.Green, 0, Y - 15, 10, 10)
-
-        'FormIntegration.PictureBox1.CreateGraphics.FillRectangle(Brushes.Red, 0, Y, 10, 10)
-        'FormIntegration.PictureBox1.CreateGraphics.DrawString("Initialisation dictionnaire NOEUD", f, Brushes.Black, 15, Y)
-
-        InitVECNoeud()
-        'FormIntegration.PictureBox1.CreateGraphics.FillRectangle(Brushes.Green, 0, Y - 15, 10, 10)
-
-        'FormIntegration.PictureBox1.CreateGraphics.FillRectangle(Brushes.Red, 0, Y, 10, 10)
-        'FormIntegration.PictureBox1.CreateGraphics.DrawString("Initialisation dictionnaire OBJET", f, Brushes.Black, 15, Y)
-
-        InitVECOBJ()
-        'FormIntegration.PictureBox1.CreateGraphics.FillRectangle(Brushes.Green, 0, Y - 15, 10, 10)
-
-        'FormIntegration.PictureBox1.CreateGraphics.FillRectangle(Brushes.Red, 0, Y, 10, 10)
-        'FormIntegration.PictureBox1.CreateGraphics.DrawString("Initialisation dictionnaire RELATION", f, Brushes.Black, 15, Y)
-
-        InitVECREL()
-        'FormIntegration.PictureBox1.CreateGraphics.FillRectangle(Brushes.Green, 0, Y - 15, 10, 10)
-
+    Private Sub Init(Of T As {New, VEC_ABS})(z6 As String, ByRef dic As Dictionary(Of String, T))
+        dic = New Dictionary(Of String, T)()
+        For Each z In ZoneListe.ChercheToutZ6(z6)
+            Dim foo As New T
+            foo.Affecte(ZoneListe, z.Index)
+            If Not dic.ContainsKey(foo.Identificateur) Then
+                dic.Add(foo.Identificateur, foo)
+                'Else
+                '    dic.Add(foo.Identificateur & "*", foo)
+            End If
+        Next
     End Sub
 
     Private Sub InitVECArc()
@@ -164,12 +181,11 @@
         Dim cur As Integer = MyBase.ZoneListe.ListeZ.IndexOf(z)
         Dim dic_o As New VEC_ARC
         dic_o.Affecte(MyBase.ZoneListe, cur)
-        Try
+        If Not mDictionaryArc.ContainsKey(dic_o.Identificateur) Then
             mDictionaryArc.Add(dic_o.Identificateur, dic_o)
-        Catch ex As Exception
-            'mDictionaryArc.Add(dic_o.Identificateur & "*", dic_o)
-        End Try
-
+            'Else
+            '   mDictionaryArc.Add(dic_o.Identificateur & "*", dic_o)
+        End If
     End Sub
 
     Private Sub InitVECNoeud()
@@ -192,11 +208,11 @@
         Dim cur As Integer = MyBase.ZoneListe.ListeZ.IndexOf(z)
         Dim dic_o As New VEC_NOEUD
         dic_o.Affecte(MyBase.ZoneListe, cur)
-        Try
+        If Not mDictionaryNoeud.ContainsKey(dic_o.Identificateur) Then
             mDictionaryNoeud.Add(dic_o.Identificateur, dic_o)
-        Catch ex As Exception
-            'mDictionaryNoeud.Add(dic_o.Identificateur & "*", dic_o)
-        End Try
+            'Else
+            '    mDictionaryNoeud.Add(dic_o.Identificateur & "*", dic_o)
+        End If
 
     End Sub
 
@@ -220,12 +236,12 @@
         Dim cur As Integer = MyBase.ZoneListe.ListeZ.IndexOf(z)
         Dim dic_o As New VEC_FACE
         dic_o.Affecte(MyBase.ZoneListe, cur)
-        Try
-            mDictionaryFace.Add(dic_o.Identificateur, dic_o)
-        Catch ex As Exception
-            'mDictionaryFace.Add(dic_o.Identificateur & "*", dic_o)
-        End Try
 
+        If Not mDictionaryFace.ContainsKey(dic_o.Identificateur) Then
+            mDictionaryFace.Add(dic_o.Identificateur, dic_o)
+        Else
+            'mDictionaryFace.Add(dic_o.Identificateur & "*", dic_o)
+        End If
     End Sub
 
     Private Sub InitVECOBJ()
@@ -325,7 +341,7 @@
         Get
             Return mDictionaryIDB
         End Get
-        
+
     End Property
 
     Private mDictionaryIDR As System.Collections.Generic.Dictionary(Of String, VEC_RELATION)

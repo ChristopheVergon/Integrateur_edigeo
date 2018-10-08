@@ -75,7 +75,7 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Security, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL" />
@@ -209,6 +209,7 @@
     <Compile Include="Lecteur\SCD_RelSemantique.vb" />
     <Compile Include="Lecteur\THF.vb" />
     <Compile Include="Lecteur\VEC.vb" />
+    <Compile Include="Lecteur\VEC_ABS.vb" />
     <Compile Include="Lecteur\VEC_ARC.vb" />
     <Compile Include="Lecteur\VEC_FACE.vb" />
     <Compile Include="Lecteur\VEC_NOEUD.vb" />
@@ -292,16 +293,12 @@
     <Content Include="CorseCarto_1.ico" />
     <Content Include="dll\gdal_csharp.dll" />
     <Content Include="dll\Girtec.Geo.dll" />
-    <Content Include="dll\Girtec.Geo.pdb" />
     <Content Include="dll\libgfl340.dll" />
     <Content Include="dll\libgfle340.dll" />
     <Content Include="dll\Mono.Security.dll" />
     <Content Include="dll\Npgsql.dll" />
-    <Content Include="dll\Npgsql.pdb" />
-    <Content Include="dll\Npgsql.XML" />
     <Content Include="dll\policy.2.0.Npgsql.dll" />
     <Content Include="dll\Wkb.dll" />
-    <Content Include="dll\Wkb.pdb" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

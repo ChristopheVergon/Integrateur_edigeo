@@ -312,6 +312,13 @@
                 la = mMonLot.FindCouche("TPOINT_id")
                 mDB.PopulateTpoint(la.DictionaryObj, mMonLot.NomLot)
 
+                arg1(0) = "Integration tronçons routiers"
+                arg1(1) = Y
+                Me.Invoke(DeuxCarreInstance, arg1)
+
+                Y = Y + 15
+                mDB.PopulateTronRoute(mMonLot.FindCouche("TRONROUTE_id").DictionaryObj, mMonLot.NomLot)
+
                 arg1(0) = "Intégration Géographique Terminée"
                 arg1(1) = Y
                 Me.Invoke(DeuxCarreInstance, arg1)

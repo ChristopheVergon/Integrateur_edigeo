@@ -1,11 +1,13 @@
 ﻿Public Class ZoneEdigeo
+    Public Property Index As Integer
+
 
     Private mZ1 As String
     Public ReadOnly Property Z1() As String
         Get
             Return mZ1
         End Get
-        
+
     End Property
 
     Private mZ2 As String
@@ -13,7 +15,7 @@
         Get
             Return mZ2
         End Get
-        
+
     End Property
     Private mZ3 As String
     Public ReadOnly Property Z3() As String
@@ -70,7 +72,7 @@
             Exit Sub
         End If
         mZ5 = ":"
-        
+
 
         mZ1 = L.Substring(0, 3)
         mZ2 = L.Substring(3, 1)
@@ -133,7 +135,7 @@
     End Function
 
     Public Function GetNatureRelation() As NatureRel
-       
+
         Select Case mZ6
             Case "ICO"
                 Return NatureRel.ICO

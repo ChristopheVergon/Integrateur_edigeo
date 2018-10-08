@@ -1,14 +1,5 @@
 ﻿Public Class VEC_NOEUD
-    
-    Private mIdentificateur As String
-    Public Property Identificateur() As String
-        Get
-            Return mIdentificateur
-        End Get
-        Set(ByVal value As String)
-            mIdentificateur = value
-        End Set
-    End Property
+    Inherits VEC_ABS
 
     Private mRefSCD As Descripteur_Reference
     Public Property RefSCD() As Descripteur_Reference
@@ -89,7 +80,7 @@
     End Property
 
 
-    Public Sub Affecte(ByVal ZL As ListeZone, ByVal cur As Integer)
+    Public Overrides Sub Affecte(ByVal ZL As ListeZone, ByVal cur As Integer)
         cur = cur + 1
 
         If ZL.ListeZ(cur).Z1 <> "RID" Then
@@ -97,7 +88,7 @@
             Exit Sub
         End If
 
-        mIdentificateur = ZL.ListeZ(cur).Z6
+        Identificateur = ZL.ListeZ(cur).Z6
 
         cur = cur + 1
 
@@ -153,5 +144,4 @@
         Next
 
     End Sub
-
 End Class

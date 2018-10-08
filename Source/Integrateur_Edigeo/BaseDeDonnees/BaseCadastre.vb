@@ -102,11 +102,11 @@ Public Class BaseCadastre
 
 
 
-        m_cmd.CommandText = "CREATE TABLE " & SchemaName & ".parcelle (idparcelle serial, ptrsubsection integer, numero varchar(255)," _
+		m_cmd.CommandText = "CREATE TABLE " & SchemaName & ".parcelle (idparcelle serial primary key, ptrsubsection integer, numero varchar(255)," _
 & " contenance integer, dateacte varchar(8), primitive varchar(4),arpente boolean, nfp boolean, anomalie integer,ptrparcasspdl integer," _
 & " pdltype varchar(3), numvoie varchar(4), voiemajic varchar(5), rivoli varchar(5),inseemere varchar(3)," _
 & "prefsecmere varchar(3), sectionmere varchar(2), numplanmere character varying(4), typefiliation varchar(1),millesime varchar(4),active boolean);"
-        m_cmd.ExecuteNonQuery()
+		m_cmd.ExecuteNonQuery()
         m_cmd.CommandText = "SELECT AddGeometryColumn('" & SchemaName & "','parcelle','the_geom'," & SRID & ",'POLYGON',2);"
         m_cmd.ExecuteNonQuery()
 
@@ -281,7 +281,7 @@ Public Class BaseCadastre
         m_cmd.CommandText = "CREATE TABLE " & SchemaName & ".tronroute (idtronroute serial,ptrcommune integer);"
         m_cmd.ExecuteNonQuery()
 
-        m_cmd.CommandText = "SELECT AddGeometryColumn('" & SchemaName & "','tronroute','the_geom'," & SRID & ",'LINESTRING',2);"
+        m_cmd.CommandText = "SELECT AddGeometryColumn('" & SchemaName & "','tronroute','the_geom'," & SRID & ",'POLYGON',2);"
         m_cmd.ExecuteNonQuery()
     End Sub
 
@@ -768,22 +768,6 @@ Public Class BaseCadastre
 
                     m_cmd.CommandText = "INSERT INTO " & nomlot & " (ptrobj,refedigeo) VALUES (" & idsec & ",'" & SURF.NomLot & SURF.ID_Objet & "');"
                     m_cmd.ExecuteNonQuery()
-
-
-                    m_cmd.CommandText = "INSERT INTO " & SchemaName & ".section (nom) VALUES ('" & nomsec1 & "') RETURNING idsection;"
-                    m_ds = New System.Data.DataSet
-                    m_da.SelectCommand = m_cmd
-                    m_da.Fill(m_ds)
-                    idsec = m_ds.Tables(0).Rows(0).Item(0)
-
-                    '***********************************************************************************************************************************
-                Else
-                    m_cmd.CommandText = "INSERT INTO " & SchemaName & ".section (nom) VALUES ('" & nomsec1 & "') RETURNING idsection;"
-                    m_ds = New System.Data.DataSet
-                    m_da.SelectCommand = m_cmd
-                    m_da.Fill(m_ds)
-                    idsec = m_ds.Tables(0).Rows(0).Item(0)
-
                 End If
             End If
 
@@ -810,16 +794,17 @@ Public Class BaseCadastre
     End Sub
 
     Public Sub PopulateSubSection(ByVal la As DictionaryObjetEDIGEO, ByVal nomlot As String)
-
+        m_cmd = New NpgsqlCommand
+        Dim wkb = m_cmd.Parameters.Add("wkb", NpgsqlTypes.NpgsqlDbType.Bytea)
+        Dim ser As New WkbSerializer()
         For I = 0 To la.count - 1
-
-            m_cmd = New NpgsqlCommand
             m_cmd.Connection = mPostGisCnn
 
             Dim SURF As New ObjetEDIGEO_SURF
             SURF = CType(la(I), ObjetEDIGEO_SURF)
+            wkb.Value = ser.serialize(SURF.Polygone)
             Dim idu As Integer = SURF.IndexOfAttribut("IDU_id")
-            m_cmd.CommandText = "INSERT INTO " & SchemaName & ".subsection (nom) VALUES ('" & SURF.ValeurAtt(idu) & "') RETURNING idsubsection;"
+            m_cmd.CommandText = "INSERT INTO " & SchemaName & ".subsection (nom,the_geom) VALUES ('" & SURF.ValeurAtt(idu) & "', st_setsrid(:wkb::geometry," & SRID & ")) RETURNING idsubsection;"
           
             Dim ptrsubsec As Integer = m_cmd.ExecuteScalar 'm_ds.Tables(0).Rows(0).Item(0)
 
@@ -832,23 +817,23 @@ Public Class BaseCadastre
 
                 If SURF.EstAssocieA(j).RefSCD._ID = "PARCELLE_SUBDSECT" Then
 
-                    tabobj = tabobj & ",'" & SURF.EstAssocieA(j).ListeObj(0).NomLot & SURF.EstAssocieA(j).ListeObj(0).ID_Objet & "'"
+					tabobj = tabobj & ",('" & SURF.EstAssocieA(j).ListeObj(0).NomLot & SURF.EstAssocieA(j).ListeObj(0).ID_Objet & "')"
 
-                    'm_cmd.CommandText = "SELECT ptrobj FROM " & nomlot & " WHERE refedigeo='" & SURF.EstAssocieA(j).ListeObj(0).NomLot & SURF.EstAssocieA(j).ListeObj(0).ID_Objet & "';"
+					'm_cmd.CommandText = "SELECT ptrobj FROM " & nomlot & " WHERE refedigeo='" & SURF.EstAssocieA(j).ListeObj(0).NomLot & SURF.EstAssocieA(j).ListeObj(0).ID_Objet & "';"
 
-                    'Dim idparc As Integer = m_cmd.ExecuteScalar
+					'Dim idparc As Integer = m_cmd.ExecuteScalar
 
-                    'm_cmd.CommandText = "UPDATE " & SchemaName & ".parcelle SET ptrsubsection=" & ptrsubsec & " WHERE idparcelle=" & idparc & ";"
-                    'm_cmd.ExecuteNonQuery()
+					'm_cmd.CommandText = "UPDATE " & SchemaName & ".parcelle SET ptrsubsection=" & ptrsubsec & " WHERE idparcelle=" & idparc & ";"
+					'm_cmd.ExecuteNonQuery()
 
-                End If
+				End If
 
             Next
 
-            m_cmd.CommandText = "WITH maliste(refedigeo) as (VALUES(" & tabobj.TrimStart(",") & ")), p2 as (SELECT ptrobj FROM " & nomlot & " JOIN maliste USING (refedigeo))" _
-                               & "UPDATE " & SchemaName & ".parcelle SET ptrsubsection=" & ptrsubsec & " WHERE idparcelle IN (SELECT ptrobj FROM p2);"
-            m_cmd.ExecuteNonQuery()
-        Next
+			m_cmd.CommandText = "WITH maliste(refedigeo) as (VALUES " & tabobj.TrimStart(",(") & "), p2 as (SELECT ptrobj FROM " & nomlot & " JOIN maliste USING (refedigeo))" _
+							   & "UPDATE " & SchemaName & ".parcelle SET ptrsubsection=" & ptrsubsec & " WHERE idparcelle IN (SELECT ptrobj FROM p2);"
+			Dim o = m_cmd.ExecuteNonQuery()
+		Next
 
     End Sub
 
@@ -968,6 +953,92 @@ Public Class BaseCadastre
         Next
 
 
+        m_cmd.Dispose()
+    End Sub
+
+    Public Sub PopulateTronRoute(ByVal la As DictionaryObjetEDIGEO, ByVal nomlot As String)
+        m_cmd.Dispose()
+        m_cmd = New NpgsqlCommand
+
+        m_cmd.Connection = mPostGisCnn
+
+        Dim sr As New Wkb.Serialization.WkbSerializer
+
+        Dim wkb As New NpgsqlParameter
+        wkb.ParameterName = "wkb"
+        wkb.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Bytea
+
+        Dim nom As New NpgsqlParameter
+        nom.ParameterName = "nom"
+        nom.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text
+
+        Dim police As New NpgsqlParameter("police", NpgsqlTypes.NpgsqlDbType.Text)
+        Dim hauteur As New NpgsqlParameter("hauteur", NpgsqlTypes.NpgsqlDbType.Real)
+        Dim angle As New NpgsqlParameter("angle", NpgsqlTypes.NpgsqlDbType.Real)
+
+
+        m_cmd.Parameters.Add(wkb)
+        m_cmd.Parameters.Add(nom)
+        m_cmd.Parameters.Add(police)
+        m_cmd.Parameters.Add(hauteur)
+
+        m_cmd.Parameters.Add(angle)
+
+        For I = 0 To la.count - 1
+
+
+            Dim SURF = CType(la(I), ObjetEDIGEO_SURF)
+
+
+
+            Dim PO = SURF.Polygone
+            wkb.Value = sr.serialize(PO)
+
+            Dim idtronroute As Integer = -1
+            '***********************************************************************************************************************************
+
+            m_cmd.CommandText = "INSERT INTO " & SchemaName & ".tronroute (ptrcommune,the_geom) VALUES (" & Idcommune & ",st_geomfromwkb(:wkb," & SRID & ")) RETURNING idtronroute;"
+
+            idtronroute = m_cmd.ExecuteScalar
+
+            m_cmd.CommandText = "INSERT INTO " & nomlot & " (ptrobj,refedigeo) VALUES (" & idtronroute & ",'" & SURF.NomLot & SURF.ID_Objet & "');"
+            m_cmd.ExecuteNonQuery()
+
+            Dim P As New ObjetEDIGEO_PCT
+
+            For k = 0 To SURF.EstAssocieA.Count - 1
+
+                For m = 0 To SURF.EstAssocieA(k).ListeObj.Count - 1
+                    If SURF.EstAssocieA(k).ListeObj(m).Nature = NatureObjetSCD.PCT Then
+                        P = SURF.EstAssocieA(k).ListeObj(m)
+                        m_da = New Npgsql.NpgsqlDataAdapter
+                        m_ds = New System.Data.DataSet
+                        wkb.Value = sr.serialize(P.Geom)
+
+
+                        Dim di3 As Double = Val(P.ValeurAtt(P.IndexOfAttribut("ID_S_ATT_DI3")))
+                        Dim di4 As Double = Val(P.ValeurAtt(P.IndexOfAttribut("ID_S_ATT_DI4")))
+                        Dim f As String = P.ValeurAtt(P.IndexOfAttribut("ID_S_ATT_FON"))
+                        Dim h As Double = Val(P.ValeurAtt(P.IndexOfAttribut("ID_S_ATT_HEI")))
+                        Dim a As Double = Math.Atan2(di4, di3) * (180 / Math.PI)
+
+                        Dim ordre As Integer = SURF.OrdreTEX_id(k)
+
+
+                        nom.Value = SURF.ValeurAtt(k)
+                        police.Value = f
+                        hauteur.Value = h
+                        angle.Value = a
+                        '*******************************************************************************
+
+                        m_cmd.CommandText = "INSERT INTO " & SchemaName & ".label (valeur,ptrobj,reftable,ordre,police,hauteur,angle,the_geom) VALUES (:nom," & idtronroute & ",2," & ordre & ",:police," & h & "," & a & ",st_geomfromwkb(:wkb," & SRID & "));"
+                        m_cmd.ExecuteNonQuery()
+                    End If
+                Next
+
+            Next
+
+        Next
         m_cmd.Dispose()
     End Sub
 

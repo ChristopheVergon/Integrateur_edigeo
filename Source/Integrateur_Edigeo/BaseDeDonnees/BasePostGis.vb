@@ -197,8 +197,8 @@ Public Class BasePostGis
         If schemaname <> "public" Then
             m_cmd = New NpgsqlCommand
             m_cmd.Connection = mPostGisCnn
-            m_cmd.CommandText = "CREATE SCHEMA '" & schemaname & "';"
-            m_cmd.ExecuteNonQuery()
+			m_cmd.CommandText = "CREATE SCHEMA " & schemaname & ";"
+			m_cmd.ExecuteNonQuery()
         End If
 
     End Sub

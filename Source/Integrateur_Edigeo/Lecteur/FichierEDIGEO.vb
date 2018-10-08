@@ -60,6 +60,7 @@
     Public Function VerifieBOMEOM(ByVal action As String, ByRef Y As Single) As Boolean
         Dim er As String = ""
         Dim i As Integer = 1
+        Dim idx As Integer = 0
         Dim z As New ZoneEdigeo("")
 
         Dim arg1(1) As Object
@@ -81,8 +82,9 @@
 
             Do While Not sr.EndOfStream
                 z = New ZoneEdigeo(sr.ReadLine)
+                z.Index = idx
                 If z.Erreur = ErreurLectureEDIGEO.NON Then
-
+                    idx += 1
                     mZoneListe.ListeZ.Add(z)
                 Else
                     If z.Erreur <> ErreurLectureEDIGEO.VIDE Then
