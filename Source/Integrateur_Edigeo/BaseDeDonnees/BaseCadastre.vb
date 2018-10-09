@@ -378,7 +378,16 @@ Public Class BaseCadastre
             End If
 
             m_cmd.CommandText = "INSERT INTO " & SchemaName & ".batiment (the_geom,dur,nom,millesime,active) VALUES (ST_GeomFromWKB(:wkb," & SRID & "),:dur,:nom,:an,true) RETURNING idbatiment;"
-            m_cmd.ExecuteNonQuery()
+
+            Try
+                m_cmd.ExecuteNonQuery()
+            Catch ex As NpgsqlException
+                mFlog.WriteLine("************** Intégration bâtiment********************")
+                mFlog.WriteLine("Erreur Integration EDIGEO : " & ex.Detail)
+                mFlog.WriteLine("Lot : " & nomlot & " Objet EDIGéo : " & SURF.NomLot & SURF.ID_Objet)
+                Continue For
+            End Try
+
 
 
         Next
@@ -768,27 +777,30 @@ Public Class BaseCadastre
 
                     m_cmd.CommandText = "INSERT INTO " & nomlot & " (ptrobj,refedigeo) VALUES (" & idsec & ",'" & SURF.NomLot & SURF.ID_Objet & "');"
                     m_cmd.ExecuteNonQuery()
+
+                    For j = 0 To SURF.EstAssocieA.Count - 1
+
+                        If SURF.EstAssocieA(j).RefSCD._ID = "SUBDSECT_SECTION" Then
+
+                            m_cmd.CommandText = "SELECT ptrobj FROM " & nomlot & " WHERE refedigeo='" & SURF.EstAssocieA(j).ListeObj(0).NomLot & SURF.EstAssocieA(j).ListeObj(0).ID_Objet & "';"
+                            'm_ds = New System.Data.DataSet
+                            'm_da.SelectCommand = m_cmd
+                            'm_da.Fill(m_ds)
+
+                            Dim idsubsection As Integer = m_cmd.ExecuteScalar 'm_ds.Tables(0).Rows(0).Item(0)
+
+
+                            m_cmd.CommandText = "UPDATE " & SchemaName & ".subsection SET ptrsection=" & idsec & " WHERE idsubsection=" & idsubsection & ";"
+                            m_cmd.ExecuteNonQuery()
+
+
+                        End If
+                    Next
+
                 End If
             End If
 
-            For j = 0 To SURF.EstAssocieA.Count - 1
-
-                If SURF.EstAssocieA(j).RefSCD._ID = "SUBDSECT_SECTION" Then
-
-                    m_cmd.CommandText = "SELECT ptrobj FROM " & nomlot & " WHERE refedigeo='" & SURF.EstAssocieA(j).ListeObj(0).NomLot & SURF.EstAssocieA(j).ListeObj(0).ID_Objet & "';"
-                    'm_ds = New System.Data.DataSet
-                    'm_da.SelectCommand = m_cmd
-                    'm_da.Fill(m_ds)
-
-                    Dim idsubsection As Integer = m_cmd.ExecuteScalar 'm_ds.Tables(0).Rows(0).Item(0)
-
-
-                    m_cmd.CommandText = "UPDATE " & SchemaName & ".subsection SET ptrsection=" & idsec & " WHERE idsubsection=" & idsubsection & ";"
-                    m_cmd.ExecuteNonQuery()
-
-
-                End If
-            Next
+           
         Next
         m_cmd.Dispose()
     End Sub
@@ -805,8 +817,18 @@ Public Class BaseCadastre
             wkb.Value = ser.serialize(SURF.Polygone)
             Dim idu As Integer = SURF.IndexOfAttribut("IDU_id")
             m_cmd.CommandText = "INSERT INTO " & SchemaName & ".subsection (nom,the_geom) VALUES ('" & SURF.ValeurAtt(idu) & "', st_setsrid(:wkb::geometry," & SRID & ")) RETURNING idsubsection;"
-          
-            Dim ptrsubsec As Integer = m_cmd.ExecuteScalar 'm_ds.Tables(0).Rows(0).Item(0)
+
+            Dim ptrsubsec As Integer
+
+            Try
+                ptrsubsec = m_cmd.ExecuteScalar 'm_ds.Tables(0).Rows(0).Item(0)
+            Catch ex As NpgsqlException
+                mFlog.WriteLine("*************Intégration SubSection *************")
+                mFlog.WriteLine("Erreur Integration EDIGEO : " & ex.Detail)
+                mFlog.WriteLine("Lot : " & nomlot & " Objet EDIGéo : " & SURF.NomLot & SURF.ID_Objet)
+                Continue For
+            End Try
+
 
             m_cmd.CommandText = "INSERT INTO " & nomlot & " (ptrobj,refedigeo) VALUES (" & ptrsubsec & ",'" & SURF.NomLot & SURF.ID_Objet & "');"
             m_cmd.ExecuteNonQuery()
@@ -898,7 +920,15 @@ Public Class BaseCadastre
 
             m_cmd.CommandText = "INSERT INTO " & SchemaName & ".parcelle (numero,millesime,active,the_geom) VALUES (:name,:an,true,st_geomfromwkb(:wkb," & SRID & ")) RETURNING idparcelle;"
 
-            idparc = m_cmd.ExecuteScalar
+            Try
+                idparc = m_cmd.ExecuteScalar
+            Catch ex As NpgsqlException
+                mFlog.WriteLine("*************Intégration Parcelle *************")
+                mFlog.WriteLine("Erreur Integration EDIGEO : " & ex.Detail)
+                mFlog.WriteLine("Lot : " & nomlot & " Objet EDIGéo : " & SURF.NomLot & SURF.ID_Objet)
+                Continue For
+            End Try
+
 
             m_cmd.CommandText = "INSERT INTO " & nomlot & " (ptrobj,refedigeo) VALUES (" & idparc & ",'" & SURF.NomLot & SURF.ID_Objet & "');"
             m_cmd.ExecuteNonQuery()
@@ -1092,7 +1122,17 @@ Public Class BaseCadastre
 
             m_cmd.CommandText = "INSERT INTO " & SchemaName & ".tronfluv (ptrcommune,the_geom) VALUES (" & Idcommune & ",st_geomfromwkb(:wkb," & SRID & ")) RETURNING idtronfluv;"
                    
-            idtronfluv = m_cmd.ExecuteScalar
+
+
+
+            Try
+                idtronfluv = m_cmd.ExecuteScalar
+            Catch ex As NpgsqlException
+                mFlog.WriteLine("************** Intégration Fleuve********************")
+                mFlog.WriteLine("Erreur Integration EDIGEO : " & ex.Detail)
+                mFlog.WriteLine("Lot : " & nomlot & " Objet EDIGéo : " & SURF.NomLot & SURF.ID_Objet)
+                Continue For
+            End Try
 
             m_cmd.CommandText = "INSERT INTO " & nomlot & " (ptrobj,refedigeo) VALUES (" & idtronfluv & ",'" & SURF.NomLot & SURF.ID_Objet & "');"
             m_cmd.ExecuteNonQuery()
@@ -1267,7 +1307,16 @@ Public Class BaseCadastre
             'm_ds = New System.Data.DataSet
             'm_da.SelectCommand = m_cmd
             'm_da.Fill(m_ds)
-            Dim idlieudit As Integer = m_cmd.ExecuteScalar 'm_ds.Tables(0).Rows(0).Item(0)
+            Dim idlieudit As Integer
+
+            Try
+                idlieudit = m_cmd.ExecuteScalar()
+            Catch ex As NpgsqlException
+                mFlog.WriteLine("************** Intégration lieudit********************")
+                mFlog.WriteLine("Erreur Integration EDIGEO : " & ex.Detail)
+                mFlog.WriteLine("Lot : " & nomlot & " Objet EDIGéo : " & SURF.NomLot & SURF.ID_Objet)
+                Continue For
+            End Try
 
             m_cmd.CommandText = "INSERT INTO " & nomlot & " (ptrobj,refedigeo) VALUES (" & idlieudit & ",'" & SURF.NomLot & SURF.ID_Objet & "');"
             m_cmd.ExecuteNonQuery()
