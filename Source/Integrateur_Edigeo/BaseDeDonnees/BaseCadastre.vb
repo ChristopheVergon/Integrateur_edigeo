@@ -3,6 +3,7 @@ Imports Wkb.Serialization
 Public Class BaseCadastre
 
     Inherits BasePostGis
+    Private Shared verrou_section As New Object
 
     Private mFlog As System.IO.StreamWriter
     Public Property Flog() As System.IO.StreamWriter
@@ -212,7 +213,7 @@ Public Class BaseCadastre
         m_cmd.CommandText = "CREATE TABLE " & SchemaName & ".section (idsection serial, nom varchar (10),ptrcommune integer,fusion varchar(3));"
         m_cmd.ExecuteNonQuery()
 
-        m_cmd.CommandText = "SELECT AddGeometryColumn('" & SchemaName & "','section','the_geom'," & SRID & ",'POLYGON',2);"
+        m_cmd.CommandText = "SELECT AddGeometryColumn('" & SchemaName & "','section','the_geom'," & SRID & ",'MULTIPOLYGON',2);"
         m_cmd.ExecuteNonQuery()
 
         m_cmd.CommandText = "SELECT AddGeometryColumn('" & SchemaName & "','section','the_point'," & SRID & ",'POINT',2);"
@@ -714,101 +715,120 @@ Public Class BaseCadastre
 
     Public Sub PopulateSection(ByVal la As DictionaryObjetEDIGEO, ByVal nomlot As String)
 
-        m_cmd = New NpgsqlCommand
-        m_cmd.Connection = mPostGisCnn
+        SyncLock verrou_section
+            mFlog.WriteLine("Intégration section")
+            m_cmd = New NpgsqlCommand
+            m_cmd.Connection = mPostGisCnn
 
-        Dim sr As New Wkb.Serialization.WkbSerializer
+            Dim sr As New Wkb.Serialization.WkbSerializer
 
-        Dim wkb As New NpgsqlParameter
-        wkb.ParameterName = "wkb"
-        wkb.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Bytea
+            Dim wkb As New NpgsqlParameter
+            wkb.ParameterName = "wkb"
+            wkb.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text
 
-        Dim wkbp As New NpgsqlParameter
-        wkbp.ParameterName = "wkbp"
-        wkbp.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Bytea
+            Dim wkbp As New NpgsqlParameter
+            wkbp.ParameterName = "wkbp"
+            wkbp.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Bytea
 
-        Dim fus As New NpgsqlParameter
-        fus.ParameterName = "fus"
-        fus.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text
+            Dim fus As New NpgsqlParameter
+            fus.ParameterName = "fus"
+            fus.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text
 
-        m_cmd.Parameters.Add(wkb)
-        m_cmd.Parameters.Add(wkbp)
-        m_cmd.Parameters.Add(fus)
+            m_cmd.Parameters.Add(wkb)
+            m_cmd.Parameters.Add(wkbp)
+            m_cmd.Parameters.Add(fus)
 
-        For I = 0 To la.count - 1
-
-
-            Dim SURF As New ObjetEDIGEO_SURF
-            SURF = CType(la(I), ObjetEDIGEO_SURF)
-
-            Dim IDU As String = SURF.ValeurAtt(SURF.IndexOfAttribut("IDU_id"))
-            Dim nomsec1 = IDU.Substring(IDU.Length - 2)
-            fus.Value = IDU.Substring(3, 3)
-            Dim insee As String = IDU.Substring(0, 3)
-
-            Dim idsec As Integer = -1
-
-            idsec = SectionExiste(insee, nomsec1, fus.Value)
+            For I = 0 To la.count - 1
 
 
-            If idsec = -1 Then
-                Dim PO As POLYGON = SURF.Polygone
-                wkb.Value = sr.serialize(PO)
+                Dim SURF As New ObjetEDIGEO_SURF
+                SURF = CType(la(I), ObjetEDIGEO_SURF)
 
-                'Dim idsection As Integer = -1
-                '***********************************************************************************************************************************
+                Dim IDU As String = SURF.ValeurAtt(SURF.IndexOfAttribut("IDU_id"))
+                Dim nomsec1 = IDU.Substring(IDU.Length - 2)
+                fus.Value = IDU.Substring(3, 3)
+                Dim insee As String = IDU.Substring(0, 3)
 
-                m_cmd.CommandText = "SELECT st_isvalid(st_geomfromwkb(:wkb," & SRID & "));"
+                Dim idsec As Integer = -1
 
-                If cmd.ExecuteScalar = True Then
-                    m_cmd.CommandText = "SELECT st_asbinary(st_pointonsurface(st_geomfromwkb(:wkb," & SRID & ")));"
-                    m_ds = New System.Data.DataSet
-                    m_da.SelectCommand = m_cmd
-                    m_da.Fill(m_ds)
-                    wkbp.Value = m_ds.Tables(0).Rows(0).Item(0)
+                idsec = SectionExiste(insee, nomsec1, fus.Value)
 
 
+                If idsec = -1 Then
+                    Dim PO As MultiPOLYGON = SURF.multiPolygone
+                    wkb.Value = PO.GetTextValue
+                    Dim tx As String
+                    tx = PO.GetTextValue
+                    'Dim idsection As Integer = -1
+                    '***********************************************************************************************************************************
 
-                    m_cmd.CommandText = "INSERT INTO " & SchemaName & ".section (nom,the_geom,the_point,fusion) VALUES ('" & nomsec1 & "',st_geomfromwkb(:wkb," & SRID & "),st_geomfromwkb(:wkbp," & SRID & "),:fus) RETURNING idsection;"
-                    m_ds = New System.Data.DataSet
-                    m_da.SelectCommand = m_cmd
-                    m_da.Fill(m_ds)
-                    idsec = m_ds.Tables(0).Rows(0).Item(0)
+                    m_cmd.CommandText = "SELECT st_isvalid(st_geometryfromtext(:wkb," & SRID & "));"
 
-                    m_cmd.CommandText = "INSERT INTO " & nomlot & " (ptrobj,refedigeo) VALUES (" & idsec & ",'" & SURF.NomLot & SURF.ID_Objet & "');"
-                    m_cmd.ExecuteNonQuery()
-
-                    For j = 0 To SURF.EstAssocieA.Count - 1
-
-                        If SURF.EstAssocieA(j).RefSCD._ID = "SUBDSECT_SECTION" Then
-
-                            m_cmd.CommandText = "SELECT ptrobj FROM " & nomlot & " WHERE refedigeo='" & SURF.EstAssocieA(j).ListeObj(0).NomLot & SURF.EstAssocieA(j).ListeObj(0).ID_Objet & "';"
-                            'm_ds = New System.Data.DataSet
-                            'm_da.SelectCommand = m_cmd
-                            'm_da.Fill(m_ds)
-
-                            Dim idsubsection As Integer = m_cmd.ExecuteScalar 'm_ds.Tables(0).Rows(0).Item(0)
+                    If cmd.ExecuteScalar = True Then
+                        m_cmd.CommandText = "SELECT st_asbinary(st_pointonsurface(st_geometryfromtext(:wkb," & SRID & ")));"
+                        m_ds = New System.Data.DataSet
+                        m_da.SelectCommand = m_cmd
+                        m_da.Fill(m_ds)
+                        wkbp.Value = m_ds.Tables(0).Rows(0).Item(0)
 
 
-                            m_cmd.CommandText = "UPDATE " & SchemaName & ".subsection SET ptrsection=" & idsec & " WHERE idsubsection=" & idsubsection & ";"
-                            m_cmd.ExecuteNonQuery()
+
+                        m_cmd.CommandText = "INSERT INTO " & SchemaName & ".section (nom,the_geom,the_point,fusion) VALUES ('" & nomsec1 & "',st_geometryfromtext(:wkb," & SRID & "),st_geomfromwkb(:wkbp," & SRID & "),:fus) RETURNING idsection;"
+                        m_ds = New System.Data.DataSet
+                        m_da.SelectCommand = m_cmd
+                        m_da.Fill(m_ds)
+                        idsec = m_ds.Tables(0).Rows(0).Item(0)
+
+                        m_cmd.CommandText = "INSERT INTO " & nomlot & " (ptrobj,refedigeo) VALUES (" & idsec & ",'" & SURF.NomLot & SURF.ID_Objet & "');"
+                        m_cmd.ExecuteNonQuery()
 
 
-                        End If
-                    Next
+                    Else
 
+                        m_cmd.CommandText = "INSERT INTO " & SchemaName & ".section (nom,fusion) VALUES ('" & nomsec1 & "',:fus) RETURNING idsection;"
+                        m_ds = New System.Data.DataSet
+                        m_da.SelectCommand = m_cmd
+                        m_da.Fill(m_ds)
+                        idsec = m_ds.Tables(0).Rows(0).Item(0)
+
+                        m_cmd.CommandText = "INSERT INTO " & nomlot & " (ptrobj,refedigeo) VALUES (" & idsec & ",'" & SURF.NomLot & SURF.ID_Objet & "');"
+                        m_cmd.ExecuteNonQuery()
+
+                        mFlog.WriteLine("*************Intégration Section *************")
+                        mFlog.WriteLine("Erreur Integration EDIGEO : INVALID GEOMETRY")
+                        mFlog.WriteLine("Lot : " & nomlot & " Objet EDIGéo : " & SURF.NomLot & SURF.ID_Objet)
+                    End If
                 End If
-            End If
 
-           
-        Next
-        m_cmd.Dispose()
+                For j = 0 To SURF.EstAssocieA.Count - 1
+
+                    If SURF.EstAssocieA(j).RefSCD._ID = "SUBDSECT_SECTION" Then
+
+                        m_cmd.CommandText = "SELECT ptrobj FROM " & nomlot & " WHERE refedigeo='" & SURF.EstAssocieA(j).ListeObj(0).NomLot & SURF.EstAssocieA(j).ListeObj(0).ID_Objet & "';"
+                        'm_ds = New System.Data.DataSet
+                        'm_da.SelectCommand = m_cmd
+                        'm_da.Fill(m_ds)
+
+                        Dim idsubsection As Integer = m_cmd.ExecuteScalar 'm_ds.Tables(0).Rows(0).Item(0)
+
+
+                        m_cmd.CommandText = "UPDATE " & SchemaName & ".subsection SET ptrsection=" & idsec & " WHERE idsubsection=" & idsubsection & ";"
+                        m_cmd.ExecuteNonQuery()
+
+
+                    End If
+                Next
+
+            Next
+            m_cmd.Dispose()
+        End SyncLock
     End Sub
 
     Public Sub PopulateSubSection(ByVal la As DictionaryObjetEDIGEO, ByVal nomlot As String)
         m_cmd = New NpgsqlCommand
         Dim wkb = m_cmd.Parameters.Add("wkb", NpgsqlTypes.NpgsqlDbType.Bytea)
         Dim ser As New WkbSerializer()
+        mFlog.WriteLine("Intégration subsection")
         For I = 0 To la.count - 1
             m_cmd.Connection = mPostGisCnn
 
@@ -839,23 +859,29 @@ Public Class BaseCadastre
 
                 If SURF.EstAssocieA(j).RefSCD._ID = "PARCELLE_SUBDSECT" Then
 
-					tabobj = tabobj & ",('" & SURF.EstAssocieA(j).ListeObj(0).NomLot & SURF.EstAssocieA(j).ListeObj(0).ID_Objet & "')"
+                    tabobj = tabobj & ",('" & SURF.EstAssocieA(j).ListeObj(0).NomLot & SURF.EstAssocieA(j).ListeObj(0).ID_Objet & "')"
 
-					'm_cmd.CommandText = "SELECT ptrobj FROM " & nomlot & " WHERE refedigeo='" & SURF.EstAssocieA(j).ListeObj(0).NomLot & SURF.EstAssocieA(j).ListeObj(0).ID_Objet & "';"
+                    'm_cmd.CommandText = "SELECT ptrobj FROM " & nomlot & " WHERE refedigeo='" & SURF.EstAssocieA(j).ListeObj(0).NomLot & SURF.EstAssocieA(j).ListeObj(0).ID_Objet & "';"
 
-					'Dim idparc As Integer = m_cmd.ExecuteScalar
+                    'Dim idparc As Integer = m_cmd.ExecuteScalar
 
-					'm_cmd.CommandText = "UPDATE " & SchemaName & ".parcelle SET ptrsubsection=" & ptrsubsec & " WHERE idparcelle=" & idparc & ";"
-					'm_cmd.ExecuteNonQuery()
+                    'm_cmd.CommandText = "UPDATE " & SchemaName & ".parcelle SET ptrsubsection=" & ptrsubsec & " WHERE idparcelle=" & idparc & ";"
+                    'm_cmd.ExecuteNonQuery()
 
-				End If
+                End If
 
             Next
+            If tabobj <> "" Then
+                m_cmd.CommandText = "WITH maliste(refedigeo) as (VALUES " & tabobj.TrimStart(",(") & "), p2 as (SELECT ptrobj FROM " & nomlot & " JOIN maliste USING (refedigeo))" _
+                               & "UPDATE " & SchemaName & ".parcelle SET ptrsubsection=" & ptrsubsec & " WHERE idparcelle IN (SELECT ptrobj FROM p2);"
+                Dim o = m_cmd.ExecuteNonQuery()
+            Else
+                mFlog.WriteLine("*************Intégration SubSection *************")
+                mFlog.WriteLine("Erreur Integration EDIGEO : pas d'association parcelle subsection")
+                mFlog.WriteLine("Lot : " & nomlot & " Objet EDIGéo : " & SURF.NomLot & SURF.ID_Objet)
+            End If
 
-			m_cmd.CommandText = "WITH maliste(refedigeo) as (VALUES " & tabobj.TrimStart(",(") & "), p2 as (SELECT ptrobj FROM " & nomlot & " JOIN maliste USING (refedigeo))" _
-							   & "UPDATE " & SchemaName & ".parcelle SET ptrsubsection=" & ptrsubsec & " WHERE idparcelle IN (SELECT ptrobj FROM p2);"
-			Dim o = m_cmd.ExecuteNonQuery()
-		Next
+        Next
 
     End Sub
 

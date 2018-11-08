@@ -238,7 +238,7 @@ Public Class FormIntegration
                 Me.Invoke(ProgresInstance)
 
                 Do While Tampon.Count >= tailletampon - 1
-                    System.Threading.Thread.Sleep(100)
+                    System.Threading.Thread.Sleep(10)
                 Loop
 
                 MDIParent1.GereTampon(la, True, 0)

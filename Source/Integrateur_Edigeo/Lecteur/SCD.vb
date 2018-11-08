@@ -106,7 +106,7 @@
     Public Overrides Sub InitDictionary()
         InitSCDObjet()
 
-        InitSCDPrimitive()
+        'InitSCDPrimitive()
 
         InitSCDAttribut()
 
@@ -184,9 +184,9 @@
 
         zl.ForEach(AddressOf AjouteAttribut)
 
-        If mDictionaryPrimitive.Where(Function(zone) zone.Value.Erreur <> ErreurStructure.NONE).Count > 0 Then
-            MsgBox("Erreur structure attribut dans SCD")
-        End If
+        'If mDictionaryPrimitive.Where(Function(zone) zone.Value.Erreur <> ErreurStructure.NONE).Count > 0 Then
+        '    MsgBox("Erreur structure attribut dans SCD")
+        'End If
 
     End Sub
 

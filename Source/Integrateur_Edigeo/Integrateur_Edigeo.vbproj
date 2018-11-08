@@ -181,6 +181,7 @@
     </Compile>
     <Compile Include="Geometrie_Edigeo\LayerEDIGEO.vb" />
     <Compile Include="Geometrie_Edigeo\ListeObjetEDIGEO.vb" />
+    <Compile Include="Geometrie_Edigeo\MultiPOLYGON.vb" />
     <Compile Include="Geometrie_Edigeo\NOEUD.vb" />
     <Compile Include="Geometrie_Edigeo\ObjetEDIGEO.vb" />
     <Compile Include="Geometrie_Edigeo\ObjetEDIGEO_CPX.vb" />

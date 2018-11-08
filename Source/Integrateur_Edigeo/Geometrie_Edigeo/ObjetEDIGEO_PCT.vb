@@ -1,8 +1,6 @@
 ﻿Public Class ObjetEDIGEO_PCT
     Inherits ObjetEDIGEO
 
-
-
     Private mGeom As NOEUD
     Public Property Geom() As NOEUD
         Get

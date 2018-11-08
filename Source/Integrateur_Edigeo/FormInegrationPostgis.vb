@@ -169,7 +169,7 @@
                 IntegrationPostgis(1)
                 mMonLot = Nothing
             Else
-                System.Threading.Thread.Sleep(100)
+                System.Threading.Thread.Sleep(10)
             End If
 
         Loop
@@ -232,9 +232,9 @@
                 Y = Y + 15
                 la = mMonLot.FindCouche("SECTION_id")
 
-                SyncLock verrou_section
+                'SyncLock verrou_section
                     mDB.PopulateSection(la.DictionaryObj, mMonLot.NomLot)
-                End SyncLock
+                'End SyncLock
 
                 arg1(0) = "Intégration Commune"
                 arg1(1) = Y

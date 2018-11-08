@@ -390,8 +390,11 @@
     Private Sub GenereRepresentePar()
         For Each V In mListeVEC
             For Each rel In V.DictionaryIDB
+
                 Dim OB As ObjetEDIGEO
+
                 If mdicobjet.TryGetValue(rel.Value.ElementRelation(0).Modele, rel.Value.ElementRelation(0)._ID, OB) Then
+
                     Select Case OB.Nature
                         Case NatureObjetSCD.PCT
                             Dim OBP As ObjetEDIGEO_PCT
@@ -402,12 +405,32 @@
                             End If
 
                         Case NatureObjetSCD.ARE
+
+                            '**********************************
+                            'attention ne pas présumer de l'ordre modifier le code pour éliminer FEA ou id objet en cours
+                            '**********************************************************  
+
+
                             Dim OBF As ObjetEDIGEO_SURF
+
                             Dim F As FACE
-                            If mdicface.TryGetValue(rel.Value.ElementRelation(1).Modele, rel.Value.ElementRelation(1)._ID, F) Then
-                                OBF = OB
-                                OBF.Geom = F
-                            End If
+
+                            OBF = OB
+                            Dim i As Integer = 0
+
+                            For Each foo In rel.Value.ElementRelation.Skip(1)
+                                i = i + 1
+
+                                If mdicface.TryGetValue(rel.Value.ElementRelation(i).Modele, rel.Value.ElementRelation(i)._ID, F) Then
+                                    OBF.AddGeom(F)
+                                End If
+
+                            Next
+                            
+
+
+
+
                     End Select
                 End If
 

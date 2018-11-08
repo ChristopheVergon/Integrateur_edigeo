@@ -39,6 +39,8 @@ Public Class Dialogconnection
         mConnectionB.CommandTimeout = 1200
         mConnectionB.Timeout = 1024
         mConnectionB.ConnectionLifeTime = Int32.MaxValue
+        mConnectionB.Pooling = True
+        mConnectionB.MaxPoolSize = 100
     End Sub
 
     Private Sub Dialogconnection_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load

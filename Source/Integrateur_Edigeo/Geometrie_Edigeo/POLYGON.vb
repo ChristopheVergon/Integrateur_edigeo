@@ -40,11 +40,30 @@ Public Class POLYGON
             End If
         Next
     End Function
-    
+    Public Function GetTextValue() As String
+
+        Dim s As String = "("
+        For Each r In mListeRing
+
+
+            s = s & "("
+
+            For Each t In r
+                s = s & t.X.ToString & " " & t.Y.ToString & ","
+            Next
+
+            s = s.Remove(s.Length - 1, 1)
+            s = s & "),"
+
+        Next
+        s = s.Remove(s.Length - 1, 1)
+        s = s & ")"
+
+        Return s
+
+    End Function
     Public Function Encadrante(ByVal m_col As System.Collections.Generic.List(Of Coordonee)) As GEO_Region
         Dim mEncadrante As New GEO_Region
-
-
 
         If m_col.count > 1 Then
             mEncadrante = Nothing
@@ -82,4 +101,6 @@ Public Class POLYGON
 
         Return mEncadrante
     End Function
+
+
 End Class
